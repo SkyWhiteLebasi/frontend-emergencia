@@ -1,0 +1,30 @@
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+  /* background-color: #242424; */
+
+  .bg-sala-espera {
+  position: relative;
+  min-height: 100vh;
+  background-image: url('../src/assets/fondo.png'); /* Ajusta la ruta */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.bg-sala-espera::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.8); /* capa gris oscura */
+  z-index: 0;
+}
