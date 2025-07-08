@@ -4,11 +4,15 @@ import PropTypes from "prop-types";
 import echo from "../config/echo";
 import { apiGetTicketEnableData } from "../config/api";
 import PatientMiniCard from "./PatientMiniCard";
+import alertaSonido from "../assets/harry.mp3";
+
+const audio = new Audio(alertaSonido);
+audio.volume = 1.0;
 
 function VistaPacienteCards() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const [sonidoHabilitado, setSonidoHabilitado] = useState(false);
   const fetchData = async () => {
     const token = sessionStorage.getItem("token");
     try {
@@ -38,13 +42,18 @@ function VistaPacienteCards() {
     });
 
     canal.listen(".evento-llamado", (e) => {
+      if (e.ticket.estado === "llamando" && sonidoHabilitado) {
+        audio.play().catch((error) => {
+          console.warn("No se pudo reproducir el sonido:", error);
+        });
+      }
       setData((prev) =>
         prev.map((p) => (p.id === e.ticket.id ? { ...p, ...e.ticket } : p))
       );
     });
 
     return () => echo.leave("canal-pacientes");
-  }, []);
+  }, [sonidoHabilitado]);
 
   const estadosOrden = [
     "llamando",
@@ -54,10 +63,20 @@ function VistaPacienteCards() {
   ];
 
   return (
-<div className="bg-sala-espera">
+    <div className="bg-sala-espera">
       <div className="relative z-10 p-6 max-w-8xl mx-auto">
         <h1 className="text-2xl font-bold text-center text-white mb-2">
           🏥 Sala de Espera
+          {!sonidoHabilitado && (
+            <div className="text-center mb-4">
+              <button
+                onClick={() => setSonidoHabilitado(true)}
+                className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded shadow"
+              >
+                🔊 Activar sonido de notificación
+              </button>
+            </div>
+          )}
         </h1>
         <hr className="my-4 border-t border-gray-300 dark:border-gray-600" />
         {loading ? (

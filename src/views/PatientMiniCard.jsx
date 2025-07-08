@@ -4,30 +4,35 @@ const prioridadConfig = {
   1: {
     color: "border-red-500",
     bg: "bg-white",
+    headerBg: "bg-red-700", // Rojo muy oscuro
     texto: "Emergencia",
     flightCode: "PRIORIDAD 1",
   },
   2: {
     color: "border-orange-500",
     bg: "bg-white",
+    headerBg: "bg-orange-600", // Naranja oscuro
     texto: "Urgente",
     flightCode: "PRIORIDAD 2",
   },
   3: {
     color: "border-yellow-500",
     bg: "bg-white",
+    headerBg: "bg-yellow-600", // Amarillo oscuro
     texto: "Alta",
     flightCode: "PRIORIDAD 3",
   },
   4: {
     color: "border-green-500",
     bg: "bg-white",
+    headerBg: "bg-green-600", // Verde oscuro
     texto: "Media",
     flightCode: "PRIORIDAD 4",
   },
   5: {
     color: "border-blue-500",
     bg: "bg-white",
+    headerBg: "bg-blue-600", // Azul oscuro
     texto: "Baja",
     flightCode: "PRIORIDAD 5",
   },
@@ -63,7 +68,9 @@ const PatientMiniCard = ({ paciente }) => {
       }`}
     >
       <header
-        className={`${estado.bg} text-white flex justify-between items-center px-4 py-2`}
+        className={`${
+          prioridad.headerBg || estado.bg
+        }  text-white flex justify-between items-center px-4 py-2`}
       >
         <span className="text-xs font-semibold">{prioridad.flightCode}</span>
         <span className="text-xl font-bold tracking-wider">
@@ -82,6 +89,15 @@ const PatientMiniCard = ({ paciente }) => {
           <small className="text-xs text-gray-500">Código</small>
           <p className="text-md font-bold">🎫 {paciente.codigo_publico}</p>
         </div> */}
+      </div>
+
+       <div className="flex justify-between px-4 py-3 text-gray-800">
+        <div>
+          <small className="text-xs text-gray-500">TOPICO ASIGNADO</small>
+          <p className="font-semibold text-lg truncate">
+            {paciente.servintern}
+          </p>
+        </div>
       </div>
 
       <div className="flex justify-between px-4 py-2 border-t border-dashed border-gray-400 text-sm">
