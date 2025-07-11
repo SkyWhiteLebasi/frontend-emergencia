@@ -5,7 +5,7 @@ import echo from "../config/echo";
 import { apiGetTicketEnableData } from "../config/api";
 import PatientMiniCard from "./PatientMiniCard";
 import alertaSonido from "../assets/harry.mp3";
-
+import "./style.css";
 const audio = new Audio(alertaSonido);
 audio.volume = 1.0;
 
@@ -13,6 +13,8 @@ function VistaPacienteCards() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [sonidoHabilitado, setSonidoHabilitado] = useState(false);
+  const [blinkingIds, setBlinkingIds] = useState([]);
+
   const fetchData = async () => {
     const token = sessionStorage.getItem("token");
     try {
@@ -47,9 +49,25 @@ function VistaPacienteCards() {
           console.warn("No se pudo reproducir el sonido:", error);
         });
       }
+
       setData((prev) =>
         prev.map((p) => (p.id === e.ticket.id ? { ...p, ...e.ticket } : p))
       );
+
+      // 👇 Agrega ID al array para parpadeo
+      setBlinkingIds((prev) => [...prev, e.ticket.id]);
+
+      // ⏳ Quitar después de 3 segundos
+      setTimeout(() => {
+        setBlinkingIds((prev) => prev.filter((id) => id !== e.ticket.id));
+      }, 3000);
+    });
+    canal.listen(".evento-atendido", (e) => {
+      // 🔁 Eliminar ticket atendido de la tabla
+      setDataHabilitados((prev) => prev.filter((p) => p.id !== e.ticketId));
+    });
+    canal.listen(".evento-en-atencion", (e) => {
+      setDataHabilitados((prev) => prev.filter((p) => p.id !== e.ticketId));
     });
 
     return () => echo.leave("canal-pacientes");
@@ -100,6 +118,7 @@ function VistaPacienteCards() {
                         <PatientMiniCard
                           key={paciente.id}
                           paciente={paciente}
+                          blinking={blinkingIds.includes(paciente.id)}
                         />
                       ))
                     ) : (

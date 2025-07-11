@@ -1,29 +1,46 @@
 import PropTypes from "prop-types";
+import PersonaRoja from "../assets/img/persona-roja.png";
+import PersonaNaranja from "../assets/img/persona-naranja.png";
+import PersonaAmarilla from "../assets/img/persona-amarilla.png";
+import PersonaVerde from "../assets/img/persona-verde.png";
+import PersonaAzul from "../assets/img/persona-azul.png";
+import "./style.css";
+const imagenPrioridad = {
+  1: PersonaRoja,
+  2: PersonaNaranja,
+  3: PersonaAmarilla,
+  4: PersonaVerde,
+  5: PersonaAzul,
+};
 
 const prioridadConfig = {
   1: {
     color: "border-red-500",
+    textColor: "text-red-500",
     bg: "bg-white",
     headerBg: "bg-red-700", // Rojo muy oscuro
     texto: "Emergencia",
     flightCode: "PRIORIDAD 1",
   },
   2: {
-    color: "border-orange-500",
+    color: "border-orange-400",
+    textColor: "text-orange-400",
     bg: "bg-white",
-    headerBg: "bg-orange-600", // Naranja oscuro
+    headerBg: "#ea8129", // Naranja oscuro
     texto: "Urgente",
     flightCode: "PRIORIDAD 2",
   },
   3: {
     color: "border-yellow-500",
+    textColor: "text-yellow-500",
     bg: "bg-white",
-    headerBg: "bg-yellow-600", // Amarillo oscuro
+    headerBg: "#FFD700", // Amarillo dorado
     texto: "Alta",
     flightCode: "PRIORIDAD 3",
   },
   4: {
     color: "border-green-500",
+    textColor: "text-green-500",
     bg: "bg-white",
     headerBg: "bg-green-600", // Verde oscuro
     texto: "Media",
@@ -31,6 +48,7 @@ const prioridadConfig = {
   },
   5: {
     color: "border-blue-500",
+    textColor: "text-blue-500",
     bg: "bg-white",
     headerBg: "bg-blue-600", // Azul oscuro
     texto: "Baja",
@@ -45,7 +63,7 @@ const estadoConfig = {
   atendido: { texto: "Atendido", icon: "✅", bg: "bg-green-600" },
 };
 
-const PatientMiniCard = ({ paciente }) => {
+const PatientMiniCard = ({ paciente, blinking }) => {
   const prioridad = prioridadConfig[paciente.prioridad_id] || {
     texto: "Sin prioridad",
     color: "border-gray-400",
@@ -61,63 +79,61 @@ const PatientMiniCard = ({ paciente }) => {
 
   return (
     <div
-      className={`relative w-full rounded-xl shadow-lg overflow-hidden border-l-4 ${
-        prioridad.color
-      } ${prioridad.bg} ${
-        paciente.estado === "llamando" ? "blinking-row" : ""
-      }`}
+      className={`relative w-full rounded-xl shadow-md overflow-hidden border-l-4
+        ${prioridad.color} ${prioridad.bg} ${blinking ? "blink-3s" : ""}
+      `}
     >
       <header
         className={`${
           prioridad.headerBg || estado.bg
-        }  text-white flex justify-between items-center px-4 py-2`}
+        } text-white flex justify-between items-center px-4 py-3 rounded-t-xl`}
+        style={{
+          backgroundColor: prioridad.headerBg || "#4B5563",
+          textShadow: "1px 1px 2px rgba(0,0,0,0.5)",
+        }}
       >
-        <span className="text-xs font-semibold">{prioridad.flightCode}</span>
-        <span className="text-xl font-bold tracking-wider">
+        <span className="text-md font-extrabold tracking-widest uppercase">
+          {paciente.servintern}
+        </span>
+        <span className="text-sm font-semibold">{prioridad.flightCode}</span>
+        <span className="text-sm font-bold tracking-wider">
           {paciente.codigo_publico}
         </span>
       </header>
 
-      <div className="flex justify-between px-4 py-3 text-gray-800">
-        <div>
-          <small className="text-xs text-gray-500">Paciente</small>
-          <p className="font-semibold text-lg truncate">
+      <div className="flex items-center justify-between px-3 py-1 text-gray-800">
+        <div className="flex flex-col">
+          <small className="text-[10px] text-gray-500">Paciente</small>
+          <p className="font-bold text-xl text-gray-800">
             {paciente.nombre_completo}
           </p>
         </div>
-        {/* <div className="text-right">
-          <small className="text-xs text-gray-500">Código</small>
-          <p className="text-md font-bold">🎫 {paciente.codigo_publico}</p>
-        </div> */}
+        <img
+          src={imagenPrioridad[paciente.prioridad_id]}
+          alt="icono paciente"
+          className="w-10 h-10 object-contain"
+        />
       </div>
 
-       <div className="flex justify-between px-4 py-3 text-gray-800">
+      <div className="flex justify-between px-3 py-1 border-t border-dashed border-gray-400 text-xs">
         <div>
-          <small className="text-xs text-gray-500">TOPICO ASIGNADO</small>
-          <p className="font-semibold text-lg truncate">
-            {paciente.servintern}
-          </p>
-        </div>
-      </div>
-
-      <div className="flex justify-between px-4 py-2 border-t border-dashed border-gray-400 text-sm">
-        <div>
-          <small className="text-xs text-gray-500 font-semibold ">Estado</small>
-          <p className="text-xs text-gray-500">
+          <small className="text-[10px] text-gray-500 font-semibold">
+            Estado
+          </small>
+          <p className="text-[11px] text-gray-500">
             {estado.icon} {estado.texto}
           </p>
         </div>
         <div>
-          <small className="text-xs text-gray-500 font-semibold ">Nivel</small>
-          <p className="text-xs text-gray-500">{prioridad.texto}</p>
+          <small className="text-[10px] text-gray-500 font-semibold">
+            Nivel
+          </small>
+          <p className="text-[11px] text-gray-500">{prioridad.texto}</p>
         </div>
       </div>
 
-      <footer className="bg-gray-200 px-4 py-2 text-xs text-gray-600">
-        <p>
-          🕒 Última actualización:{" "}
-          {new Date(paciente.updated_at).toLocaleTimeString()}
-        </p>
+      <footer className="bg-gray-200 px-3 py-1 text-[10px] text-gray-600">
+        🕒 {new Date(paciente.updated_at).toLocaleTimeString()}
       </footer>
     </div>
   );
@@ -131,5 +147,7 @@ PatientMiniCard.propTypes = {
     prioridad_id: PropTypes.number.isRequired,
     estado: PropTypes.string,
     updated_at: PropTypes.string.isRequired,
+    id: PropTypes.number.isRequired,
   }).isRequired,
+  blinking: PropTypes.bool,
 };

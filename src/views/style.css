@@ -1,0 +1,12 @@
+@keyframes flash-bg {
+  0%, 100% {
+    background-color: transparent;
+  }
+  50% {
+    background-color: #ffeb3b;
+  }
+}
+
+.blink-3s {
+  animation: flash-bg 0.5s ease-in-out 6;
+}
