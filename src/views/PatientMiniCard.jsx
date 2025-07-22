@@ -64,7 +64,7 @@ const estadoConfig = {
 };
 
 const PatientMiniCard = ({ paciente, blinking }) => {
-  const prioridad = prioridadConfig[paciente.prioridad_id] || {
+  const prioridad = prioridadConfig[paciente.codpriori] || {
     texto: "Sin prioridad",
     color: "border-gray-400",
     bg: "bg-gray-100",
@@ -109,7 +109,7 @@ const PatientMiniCard = ({ paciente, blinking }) => {
           </p>
         </div>
         <img
-          src={imagenPrioridad[paciente.prioridad_id]}
+          src={imagenPrioridad[paciente.codpriori]}
           alt="icono paciente"
           className="w-10 h-10 object-contain"
         />
@@ -144,7 +144,7 @@ PatientMiniCard.propTypes = {
   paciente: PropTypes.shape({
     codigo_publico: PropTypes.string.isRequired,
     nombre_completo: PropTypes.string.isRequired,
-    prioridad_id: PropTypes.number.isRequired,
+    codpriori: PropTypes.number.isRequired,
     estado: PropTypes.string,
     updated_at: PropTypes.string.isRequired,
     id: PropTypes.number.isRequired,

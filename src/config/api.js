@@ -7,4 +7,5 @@ export const apiGetTicketEnableData = URL + "ticket-enable-data"
 // export const apiGetVistaPaciente = URL + "emergencia"
 // export const apiGetVistaPacienteEnable = URL + "emergencia-list"
 export const apiGetVistaPacienteEnableData = URL + "ticket-enable-data"
+export const apiLlamarTicket = URL + "ticket-enable-data-vista";
 // export const apiGetVistaPacienteDisableData = URL + "ticket-disable-data"

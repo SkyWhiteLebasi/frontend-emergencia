@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import PropTypes from "prop-types";
 import echo from "../config/echo";
-import { apiGetTicketEnableData } from "../config/api";
+import { apiLlamarTicket } from "../config/api";
 import PatientMiniCard from "./PatientMiniCard";
 import alertaSonido from "../assets/harry.mp3";
 import "./style.css";
@@ -18,10 +18,10 @@ function VistaPacienteCards() {
   const fetchData = async () => {
     const token = sessionStorage.getItem("token");
     try {
-      const response = await axios.get(apiGetTicketEnableData, {
+      const response = await axios.get(apiLlamarTicket, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      if (response.status === 201) {
+      if (response.status === 200) {
         setData(response.data.data);
       }
     } catch (error) {
