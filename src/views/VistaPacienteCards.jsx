@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import PropTypes from "prop-types";
 import echo from "../config/echo";
-import { apiLlamarTicket } from "../config/api";
+import { apiLlamarTicketVista } from "../config/api";
 import PatientMiniCard from "./PatientMiniCard";
 import alertaSonido from "../assets/harry.mp3";
 import "./style.css";
+
 const audio = new Audio(alertaSonido);
 audio.volume = 1.0;
 
@@ -18,7 +19,7 @@ function VistaPacienteCards() {
   const fetchData = async () => {
     const token = sessionStorage.getItem("token");
     try {
-      const response = await axios.get(apiLlamarTicket, {
+      const response = await axios.get(apiLlamarTicketVista, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (response.status === 200) {
@@ -44,40 +45,47 @@ function VistaPacienteCards() {
     });
 
     canal.listen(".evento-llamado", (e) => {
+      // Reproducir sonido solo para estado "llamando"
       if (e.ticket.estado === "llamando" && sonidoHabilitado) {
         audio.play().catch((error) => {
           console.warn("No se pudo reproducir el sonido:", error);
         });
       }
 
+      // Actualizar el ticket en el estado
       setData((prev) =>
         prev.map((p) => (p.id === e.ticket.id ? { ...p, ...e.ticket } : p))
       );
 
-      // 👇 Agrega ID al array para parpadeo
-      setBlinkingIds((prev) => [...prev, e.ticket.id]);
-
-      // ⏳ Quitar después de 3 segundos
-      setTimeout(() => {
-        setBlinkingIds((prev) => prev.filter((id) => id !== e.ticket.id));
-      }, 3000);
+      // Efecto de parpadeo solo para "llamando"
+      if (e.ticket.estado === "llamando") {
+        setBlinkingIds((prev) => [...prev, e.ticket.id]);
+        setTimeout(() => {
+          setBlinkingIds((prev) => prev.filter((id) => id !== e.ticket.id));
+        }, 3000);
+      }
     });
+
     canal.listen(".evento-atendido", (e) => {
-      // 🔁 Eliminar ticket atendido de la tabla
-      setDataHabilitados((prev) => prev.filter((p) => p.id !== e.ticketId));
-    });
-    canal.listen(".evento-en-atencion", (e) => {
-      setDataHabilitados((prev) => prev.filter((p) => p.id !== e.ticketId));
+      // Eliminar ticket atendido
+      setData((prev) => prev.filter((p) => p.id !== e.ticketId));
     });
 
-    return () => echo.leave("canal-pacientes");
+    canal.listen(".evento-en-atencion", (e) => {
+      // Eliminar ticket en atención
+      setData((prev) => prev.filter((p) => p.id !== e.ticketId));
+    });
+
+    return () => {
+      echo.leave("canal-pacientes");
+    };
   }, [sonidoHabilitado]);
 
+  // Orden de las columnas
   const estadosOrden = [
     "llamando",
     "en espera",
-    "no respondio",
-    // "atendido"
+    "no respondio"
   ];
 
   return (
@@ -97,20 +105,20 @@ function VistaPacienteCards() {
           )}
         </h1>
         <hr className="my-4 border-t border-gray-300 dark:border-gray-600" />
+        
         {loading ? (
-          <p className="text-center text-white text-lg">
-            Cargando pacientes...
-          </p>
+          <p className="text-center text-white text-lg">Cargando pacientes...</p>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {estadosOrden.map((estado) => {
               const pacientesFiltrados = data.filter(
                 (p) => p.estado?.toLowerCase() === estado
               );
+              
               return (
                 <div key={estado}>
                   <h2 className="text-center text-lg font-semibold text-white uppercase mb-3">
-                    {estado}
+                    {estado === "no respondio" ? "No Respondió" : estado}
                   </h2>
                   <div className="flex flex-col gap-4">
                     {pacientesFiltrados.length > 0 ? (
@@ -119,12 +127,11 @@ function VistaPacienteCards() {
                           key={paciente.id}
                           paciente={paciente}
                           blinking={blinkingIds.includes(paciente.id)}
+                          highlight={paciente.estado === "no respondio"}
                         />
                       ))
                     ) : (
-                      <p className="text-lg text-white text-center">
-                        Sin pacientes....
-                      </p>
+                      <p className="text-lg text-white text-center">Sin pacientes...</p>
                     )}
                   </div>
                 </div>
