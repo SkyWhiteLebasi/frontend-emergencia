@@ -4,6 +4,8 @@ import PersonaNaranja from "../assets/img/persona-naranja.png";
 import PersonaAmarilla from "../assets/img/persona-amarilla.png";
 import PersonaVerde from "../assets/img/persona-verde.png";
 import PersonaAzul from "../assets/img/persona-azul.png";
+import PersonaDefault from "../assets/img/persona-grey.png"; // Nueva imagen gris o neutral
+
 import "./style.css";
 const imagenPrioridad = {
   1: PersonaRoja,
@@ -54,6 +56,14 @@ const prioridadConfig = {
     texto: "Baja",
     flightCode: "PRIORIDAD 5",
   },
+  default: {
+    color: "border-gray-400",
+    textColor: "text-gray-400",
+    bg: "bg-white",
+    headerBg: "bg-gray-600",
+    texto: "Sin Prioridad asig.",
+    flightCode: "SIN PRIORIDAD ASIG.",
+  },
 };
 
 const estadoConfig = {
@@ -64,17 +74,33 @@ const estadoConfig = {
 };
 
 const PatientMiniCard = ({ paciente, blinking }) => {
-  const prioridad = prioridadConfig[paciente.prioridad_id] || {
-    texto: "Sin prioridad",
-    color: "border-gray-400",
-    bg: "bg-gray-100",
-    flightCode: "000-000",
-  };
+  // const prioridad = prioridadConfig[paciente.prioridad_id] || {
+  //   texto: "Sin prioridad",
+  //   color: "border-gray-400",
+  //   bg: "bg-gray-100",
+  //   flightCode: "000-000",
+  // };
+  const prioridad =
+    prioridadConfig[paciente.prioridad_id] || prioridadConfig.default;
 
   const estado = estadoConfig[paciente.estado?.toLowerCase()] || {
     texto: "Desconocido",
     icon: "❔",
     bg: "bg-gray-500", // color por defecto
+  };
+  const abreviarServicio = (servintern) => {
+    const mapaAbreviaciones = {
+      "PEDIATRIA 1": "T. PEDIATRIA 1",
+      "TOP. CIRUGIA": "T. CIRUGÍA",
+      "TOP. TRAUMATOLOGIA": "T. TRAUMATOLOGÍA",
+      "MEDICINA 1": "T. MEDICINA 1",
+      "MEDICINA 2": "T. MEDICINA 2",
+      "MEDICINA 3": "T. MEDICINA 3",
+      "GINECOLOGIA Y OBSTETRICIA": "T. GINECOL. OBST.",
+      // Agrega más según sea necesario
+    };
+
+    return mapaAbreviaciones[servintern?.toUpperCase()] || servintern;
   };
 
   return (
@@ -93,7 +119,7 @@ const PatientMiniCard = ({ paciente, blinking }) => {
         }}
       >
         <span className="text-md font-extrabold tracking-widest uppercase">
-          {paciente.servintern}
+          {abreviarServicio(paciente.servintern)}
         </span>
         <span className="text-sm font-semibold">{prioridad.flightCode}</span>
         <span className="text-sm font-bold tracking-wider">
@@ -109,7 +135,7 @@ const PatientMiniCard = ({ paciente, blinking }) => {
           </p>
         </div>
         <img
-          src={imagenPrioridad[paciente.prioridad_id]}
+          src={imagenPrioridad[paciente.prioridad_id] || PersonaDefault}
           alt="icono paciente"
           className="w-10 h-10 object-contain"
         />
