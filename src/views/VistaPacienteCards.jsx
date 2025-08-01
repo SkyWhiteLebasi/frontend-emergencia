@@ -63,21 +63,26 @@ function VistaPacienteCards() {
     });
 
     canal.listen(".evento-llamado", (e) => {
-      // Reproducir sonido solo para estado "llamando"
       if (e.ticket.estado === "llamando" && sonidoHabilitado) {
         audio.play().catch((error) => {
           console.warn("No se pudo reproducir el sonido:", error);
         });
       }
 
-      // Actualizar el ticket en el estado
-      setData((prev) =>
-        ordenarTickets(
-          prev.map((p) => (p.id === e.ticket.id ? { ...p, ...e.ticket } : p))
-        )
-      );
+      // Actualizar el estado local inmediatamente
+      setData((prev) => {
+        const updated = prev.map((p) =>
+          p.id === e.ticket.id ? { ...p, ...e.ticket } : p
+        );
+        return ordenarTickets(updated);
+      });
 
-      // Efecto de parpadeo solo para "llamando"
+      // Forzar recarga después de un breve retraso para asegurar consistencia
+      setTimeout(() => {
+        fetchData();
+      }, 500);
+
+      // Efecto de parpadeo
       if (e.ticket.estado === "llamando") {
         setBlinkingIds((prev) => [...prev, e.ticket.id]);
         setTimeout(() => {
