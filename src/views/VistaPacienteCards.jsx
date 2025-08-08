@@ -15,6 +15,8 @@ function VistaPacienteCards() {
   const [loading, setLoading] = useState(true);
   const [sonidoHabilitado, setSonidoHabilitado] = useState(false);
   const [blinkingIds, setBlinkingIds] = useState([]);
+
+  // Modifica la función ordenarTickets para que sea más robusta
   const ordenarTickets = (tickets) => {
     return [...tickets].sort((a, b) => {
       const ordenEstados = {
@@ -55,10 +57,12 @@ function VistaPacienteCards() {
 
     const canal = echo.channel("canal-pacientes");
 
+    // Modifica los listeners para que siempre ordenen los datos
     canal.listen(".evento-creado", (e) => {
       setData((prev) => {
         const yaExiste = prev.some((p) => p.id === e.ticket.id);
-        return yaExiste ? prev : [...prev, e.ticket];
+        const nuevosDatos = yaExiste ? prev : [...prev, e.ticket];
+        return ordenarTickets(nuevosDatos);
       });
     });
 
@@ -69,18 +73,12 @@ function VistaPacienteCards() {
         });
       }
 
-      // Actualizar el estado local inmediatamente
       setData((prev) => {
         const updated = prev.map((p) =>
           p.id === e.ticket.id ? { ...p, ...e.ticket } : p
         );
         return ordenarTickets(updated);
       });
-
-      // Forzar recarga después de un breve retraso para asegurar consistencia
-      setTimeout(() => {
-        fetchData();
-      }, 500);
 
       // Efecto de parpadeo
       if (e.ticket.estado === "llamando") {
@@ -92,15 +90,16 @@ function VistaPacienteCards() {
     });
 
     canal.listen(".evento-atendido", (e) => {
-      // Eliminar ticket atendido
-      setData((prev) => prev.filter((p) => p.id !== e.ticketId));
+      setData((prev) =>
+        ordenarTickets(prev.filter((p) => p.id !== e.ticketId))
+      );
     });
 
     canal.listen(".evento-en-atencion", (e) => {
-      // Eliminar ticket en atención
-      setData((prev) => prev.filter((p) => p.id !== e.ticketId));
+      setData((prev) =>
+        ordenarTickets(prev.filter((p) => p.id !== e.ticketId))
+      );
     });
-
     return () => {
       echo.leave("canal-pacientes");
     };

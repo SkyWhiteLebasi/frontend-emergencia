@@ -74,12 +74,7 @@ const estadoConfig = {
 };
 
 const PatientMiniCard = ({ paciente, blinking }) => {
-  // const prioridad = prioridadConfig[paciente.prioridad_id] || {
-  //   texto: "Sin prioridad",
-  //   color: "border-gray-400",
-  //   bg: "bg-gray-100",
-  //   flightCode: "000-000",
-  // };
+
   const prioridad =
     prioridadConfig[paciente.prioridad_id] || prioridadConfig.default;
 
@@ -97,7 +92,6 @@ const PatientMiniCard = ({ paciente, blinking }) => {
       "MEDICINA 2": "T. MEDICINA 2",
       "MEDICINA 3": "T. MEDICINA 3",
       "GINECOLOGIA Y OBSTETRICIA": "T. GINECOL. OBST.",
-      // Agrega más según sea necesario
     };
 
     return mapaAbreviaciones[servintern?.toUpperCase()] || servintern;
