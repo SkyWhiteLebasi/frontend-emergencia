@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import echo from "../config/echo";
 import { apiLlamarTicketVista } from "../config/api";
 import PatientMiniCard from "./PatientMiniCard";
-import alertaSonido from "../assets/harry.mp3";
+import alertaSonido from "../assets/ringtone1.mp3";
 import "./style.css";
 
 const audio = new Audio(alertaSonido);
