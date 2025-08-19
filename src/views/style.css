@@ -10,3 +10,17 @@
 .blink-3s {
   animation: flash-bg 0.5s ease-in-out 6;
 }
+
+/* Para los gradientes de prioridad */
+.bg-gradient-emergencia {
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+}
+.bg-gradient-alta {
+  background: linear-gradient(135deg, #ea580c, #c2410c);
+}
+.bg-gradient-media {
+  background: linear-gradient(135deg, #d97706, #b45309);
+}
+.bg-gradient-baja {
+  background: linear-gradient(135deg, #65a30d, #4d7c0f);
+}
