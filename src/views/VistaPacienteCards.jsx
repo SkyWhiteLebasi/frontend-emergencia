@@ -106,7 +106,7 @@ function VistaPacienteCards() {
   }, [sonidoHabilitado]);
 
   // Orden de las columnas
-  const estadosOrden = ["llamando", "en espera", "no respondio"];
+  const estadosOrden = ["en espera", "llamando", "no respondio"];
   const estadoColores = {
     llamando: "bg-white-300 bg-opacity-20", // Amarillo semitransparente
     "en espera": "bg-white-300 bg-opacity-20", // Azul semitransparente
@@ -188,10 +188,10 @@ function VistaPacienteCards() {
                   className={`rounded-xl p-4 ${estadoColores[estado]}`}
                 >
                   <h2 className="text-center text-lg font-bold text-white uppercase mb-4 p-2 rounded-md bg-black bg-opacity-30">
-                    {estado === "llamando" &&
-                      "📞 Llamando - Acerquese al Tópico"}
                     {estado === "en espera" &&
                       "⏳ En Espera - Esté atento a su turno"}
+                    {estado === "llamando" &&
+                      "📞 Llamando - Acerquese al Tópico"}
                     {estado === "no respondio" &&
                       "❌ No Respondió - Vuelva a tomar turno"}
                   </h2>
@@ -207,10 +207,10 @@ function VistaPacienteCards() {
                       ))
                     ) : (
                       <div className="bg-white bg-opacity-20 rounded-lg p-6 text-center">
-                        <p className="text-white text-lg font-medium">
+                        <p className="text-black text-lg font-medium">
                           No hay pacientes
                         </p>
-                        <p className="text-white text-opacity-70 text-sm mt-1">
+                        <p className="text-black text-opacity-70 text-sm mt-1">
                           en esta categoría
                         </p>
                       </div>
